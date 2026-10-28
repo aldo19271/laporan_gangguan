@@ -32,6 +32,15 @@ export default async function handler(req, res) {
       await sql`UPDATE reports SET status = ${status}, updated_at = NOW() WHERE id = ${id}`;
       return res.json({ ok: true });
     }
+    // FITUR BARU: Hapus Laporan
+    if (req.method === 'DELETE') {
+      const { id } = req.query;
+      const [r] = await sql`SELECT user_id FROM reports WHERE id = ${id}`;
+      if (!r) return res.status(404).json({ error: 'Tidak ditemukan' });
+      if (s.role !== 'ADMIN' && r.user_id !== s.id) return res.status(403).json({ error: 'Akses ditolak' });
+      await sql`DELETE FROM reports WHERE id = ${id}`;
+      return res.json({ ok: true });
+    }
     res.status(405).json({ error: 'Method not allowed' });
   } catch (e) { res.status(500).json({ error: e.message }); }
 }
