@@ -7,11 +7,13 @@ export default async function handler(req, res) {
   if (!s || s.role !== 'ADMIN') return res.status(403).json({ error: 'Akses ditolak' });
 
   try {
-    // FITUR BARU: Ambil list semua user biasa (bukan admin)
+    // Ambil SEMUA user (Admin & User biasa)
     if (req.method === 'GET') {
-      const users = await sql`SELECT id, email, username, created_at FROM users WHERE role = 'USER' ORDER BY created_at DESC`;
+      const users = await sql`SELECT id, email, username, role, created_at FROM users ORDER BY created_at DESC`;
       return res.json(users);
     }
+    
+    // Buat Admin Baru
     if (req.method === 'POST') {
       const { email, username, password } = req.body || {};
       if (!email || !username || !password) return res.status(400).json({ error: 'Lengkapi data' });
@@ -21,7 +23,26 @@ export default async function handler(req, res) {
       await sql`INSERT INTO users (email, username, password, role) VALUES (${email}, ${username}, ${hash}, 'ADMIN')`;
       return res.json({ ok: true });
     }
-    // FITUR BARU: Hapus User (Hanya bisa hapus role USER, admin tidak bisa dihapus)
+    
+    // Edit User / Admin
+    if (req.method === 'PATCH') {
+      const { id, email, username, password } = req.body || {};
+      if (!id || !email || !username) return res.status(400).json({ error: 'Lengkapi data' });
+      
+      // Cek duplikat email/username, kecuali milik user itu sendiri
+      const dup = await sql`SELECT id FROM users WHERE (email = ${email} OR username = ${username}) AND id != ${id} LIMIT 1`;
+      if (dup.length) return res.status(409).json({ error: 'Email atau username sudah dipakai akun lain' });
+
+      if (password && password.trim() !== '') {
+        const hash = await bcrypt.hash(password, 10);
+        await sql`UPDATE users SET email = ${email}, username = ${username}, password = ${hash} WHERE id = ${id}`;
+      } else {
+        await sql`UPDATE users SET email = ${email}, username = ${username} WHERE id = ${id}`;
+      }
+      return res.json({ ok: true });
+    }
+    
+    // Hapus User (Hanya role USER yang bisa dihapus)
     if (req.method === 'DELETE') {
       const { id } = req.query;
       await sql`DELETE FROM users WHERE id = ${id} AND role = 'USER'`;
