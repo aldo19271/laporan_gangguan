@@ -4,18 +4,24 @@ import { getSession } from './_lib/auth.js';
 export default async function handler(req, res) {
   try {
     if (req.method === 'POST') {
-      const { reportId, content, guestUsername, type } = req.body || {};
+      const { reportId, content, guestUsername, guestEmail, type } = req.body || {};
 
+      // Fitur Lupa Password (Dari halaman login)
       if (type === 'forgot') {
         if (!guestUsername || !content) return res.status(400).json({ error: 'Lengkapi data' });
         const [admin] = await sql`SELECT id FROM users WHERE role = 'ADMIN' LIMIT 1`;
         if (!admin) return res.status(500).json({ error: 'Admin tidak ditemukan' });
         const [u] = await sql`SELECT id FROM users WHERE username = ${guestUsername}`;
+        
+        // Menambahkan Email ke dalam pesan agar admin tahu
+        const fullContent = `[LUPA] Username: ${guestUsername} | Email: ${guestEmail} | Pesan: ${content}`;
+        
         await sql`INSERT INTO messages (sender_id, receiver_id, content)
-          VALUES (${u?.id || admin.id}, ${admin.id}, ${'[LUPA] ' + guestUsername + ': ' + content})`;
+          VALUES (${u?.id || admin.id}, ${admin.id}, ${fullContent})`;
         return res.json({ ok: true });
       }
 
+      // Fitur Chat Biasa (User ke Admin atau Admin ke User)
       const s = getSession(req);
       if (!s) return res.status(401).json({ error: 'Tidak login' });
       if (!reportId || !content) return res.status(400).json({ error: 'Lengkapi data' });
@@ -33,6 +39,8 @@ export default async function handler(req, res) {
       const s = getSession(req);
       if (!s) return res.status(401).json({ error: 'Tidak login' });
       const { reportId, inbox } = req.query;
+      
+      // Fitur Inbox Admin (Pesan Lupa Password)
       if (inbox === 'forgot') {
         if (s.role !== 'ADMIN') return res.status(403).json({ error: 'Akses ditolak' });
         const rows = await sql`
@@ -41,6 +49,8 @@ export default async function handler(req, res) {
           WHERE m.report_id IS NULL ORDER BY m.created_at DESC`;
         return res.json(rows);
       }
+      
+      // Fitur Chat Biasa
       if (!reportId) return res.status(400).json({ error: 'reportId required' });
       const rows = await sql`SELECT * FROM messages WHERE report_id = ${reportId} ORDER BY created_at ASC`;
       return res.json(rows);
