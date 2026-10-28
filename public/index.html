@@ -7,24 +7,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Library Ikon & Chart.js -->
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
-  --primary: #1E40AF;
-  --primary-hover: #1e3a8a;
-  --bg-body: #F8FAFC;
-  --bg-surface: #FFFFFF;
-  --text-main: #0F172A;
-  --text-muted: #64748B;
-  --border: #E2E8F0;
-  --waiting: #EAB308;
-  --process: #F59E0B;
-  --done: #10B981;
-  --danger: #EF4444;
-  --radius: 10px;
-  --shadow-sm: 0 1px 3px rgba(15,23,42,.05);
-  --shadow-md: 0 4px 12px rgba(15,23,42,.08);
-  --sidebar-w: 260px;
+  --primary: #1E40AF; --primary-hover: #1e3a8a;
+  --bg-body: #F8FAFC; --bg-surface: #FFFFFF;
+  --text-main: #0F172A; --text-muted: #64748B; --border: #E2E8F0;
+  --waiting: #EAB308; --process: #F59E0B; --done: #10B981; --danger: #EF4444;
+  --radius: 10px; --shadow-sm: 0 1px 3px rgba(15,23,42,.05);
+  --shadow-md: 0 4px 12px rgba(15,23,42,.08); --sidebar-w: 260px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -37,17 +30,16 @@ a { color: inherit; text-decoration: none; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-@keyframes growWidth { from { width: 0; } }
 .animate-fade { animation: fadeIn 0.3s ease; }
 .animate-slide { animation: slideUp 0.3s ease; }
 
-/* AUTH PAGES (Login/Register) */
+/* AUTH PAGES */
 .auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--bg-body); }
 .auth-card { width: 100%; max-width: 400px; background: var(--bg-surface); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow-md); border: 1px solid var(--border); animation: slideUp 0.4s ease; }
 .auth-card h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
 .auth-card p.sub { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
 
-/* LAYOUT: SIDEBAR & MAIN */
+/* LAYOUT */
 .app-layout { display: flex; min-height: 100vh; }
 .sidebar { width: var(--sidebar-w); background: var(--bg-surface); border-right: 1px solid var(--border); position: fixed; top: 0; bottom: 0; left: 0; z-index: 50; display: flex; flex-direction: column; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 18px; color: var(--primary); }
@@ -57,7 +49,6 @@ a { color: inherit; text-decoration: none; }
 .nav-item.active { background: #EFF6FF; color: var(--primary); font-weight: 600; }
 .nav-item svg { width: 18px; height: 18px; }
 .sidebar-footer { padding: 16px; border-top: 1px solid var(--border); }
-
 .main-content { flex: 1; margin-left: var(--sidebar-w); display: flex; flex-direction: column; min-height: 100vh; }
 .topbar { height: 64px; background: var(--bg-surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 16px; position: sticky; top: 0; z-index: 40; }
 .hamburger { display: none; padding: 8px; border-radius: 8px; background: var(--bg-body); }
@@ -65,11 +56,14 @@ a { color: inherit; text-decoration: none; }
 .overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.4); z-index: 45; backdrop-filter: blur(2px); animation: fadeIn 0.2s; }
 
 /* COMPONENTS */
-.field { margin-bottom: 20px; }
+.field { margin-bottom: 20px; position: relative; }
 .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
 .field input, .field textarea, .field select { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--bg-surface); transition: all 0.2s; color: var(--text-main); }
 .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,64,175,0.1); }
 .field textarea { resize: vertical; min-height: 120px; }
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 48px; }
+.toggle-pass { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); padding: 4px; }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; background: var(--primary); color: #fff; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s; }
 .btn:hover { background: var(--primary-hover); }
@@ -78,26 +72,21 @@ a { color: inherit; text-decoration: none; }
 .btn--danger { background: #FEF2F2; color: var(--danger); border: 1px solid #FECACA; }
 .btn--danger:hover { background: #FEE2E2; }
 .btn--block { width: 100%; }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn-icon { padding: 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); transition: 0.2s; background: var(--bg-surface); border: 1px solid var(--border); }
 .btn-icon:hover { background: var(--bg-body); color: var(--text-main); }
 .btn-icon--danger:hover { background: #FEF2F2; color: var(--danger); border-color: #FECACA; }
+.btn-icon--primary:hover { background: #EFF6FF; color: var(--primary); border-color: #BFDBFE; }
 
 .card { background: var(--bg-surface); border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .grid { display: grid; gap: 20px; }
 .grid-cards { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
 
-/* ANALYTICS BAR */
-.analytics-card { margin-bottom: 24px; }
-.analytics-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; font-weight: 600; }
-.analytics-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--bg-body); width: 100%; }
-.bar-segment { height: 100%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); animation: growWidth 1s ease; }
-.bar-waiting { background: var(--waiting); }
-.bar-process { background: var(--process); }
-.bar-done { background: var(--done); }
-.analytics-legend { display: flex; gap: 16px; margin-top: 16px; font-size: 13px; color: var(--text-muted); }
-.legend-item { display: flex; align-items: center; gap: 6px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; }
+/* CHART & FILTER TABS */
+.chart-container { background: var(--bg-surface); border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+.filter-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scrollbar-width: none; }
+.filter-tabs::-webkit-scrollbar { display: none; }
+.tab { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; transition: 0.2s; }
+.tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
 /* BADGES */
 .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
@@ -129,7 +118,6 @@ tr:last-child td { border-bottom: none; }
 .modal__panel { background: var(--bg-surface); border-radius: var(--radius); width: 100%; max-width: 440px; padding: 32px; animation: slideUp 0.3s; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-md); }
 .modal__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .modal__head h2 { font-size: 18px; font-weight: 700; }
-
 #toast-container { position: fixed; top: 24px; right: 24px; z-index: 200; display: flex; flex-direction: column; gap: 12px; }
 .toast { padding: 14px 20px; border-radius: 8px; background: var(--bg-surface); box-shadow: var(--shadow-md); font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 12px; border-left: 4px solid var(--primary); animation: slideUp 0.3s; }
 .toast--success { border-color: var(--done); }
@@ -144,9 +132,9 @@ tr:last-child td { border-bottom: none; }
   .overlay.show { display: block; }
   .content-area { padding: 20px; }
   .grid-cards { grid-template-columns: 1fr; }
-  .two-col { grid-template-columns: 1fr !important; }
 }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -155,9 +143,6 @@ tr:last-child td { border-bottom: none; }
 <div id="modal-root"></div>
 
 <script type="module">
-/* =====================================================
-   STATE & API
-   ===================================================== */
 const state = { user: null };
 
 async function api(path, opts = {}) {
@@ -172,10 +157,19 @@ async function api(path, opts = {}) {
   return data;
 }
 
-/* =====================================================
-   UI HELPERS (Lucide & Toast & Modal)
-   ===================================================== */
 function refreshIcons() { setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 50); }
+
+window.togglePassword = function(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.innerHTML = '<i data-lucide="eye-off" style="width:18px"></i>';
+  } else {
+    input.type = 'password';
+    btn.innerHTML = '<i data-lucide="eye" style="width:18px"></i>';
+  }
+  refreshIcons();
+}
 
 function toast(msg, type = 'success') {
   const icons = { success: 'check-circle', error: 'alert-circle' };
@@ -213,22 +207,18 @@ function confirmDelete(text, onConfirm) {
 }
 
 /* =====================================================
-   ROUTER
+   ROUTER & LAYOUT
    ===================================================== */
 const routes = {};
-
 async function navigate() {
   const hash = location.hash.slice(1) || '/login';
   const [path, qs] = hash.split('?');
   const query = Object.fromEntries(new URLSearchParams(qs || ''));
-
   const isPublic = path === '/login' || path === '/register';
   const isAdmin = path.startsWith('/admin');
 
   if (!state.user && !isPublic) return location.hash = '#/login';
-  if (state.user && isPublic) {
-    return location.hash = state.user.role === 'ADMIN' ? '#/admin/reports' : '#/dashboard';
-  }
+  if (state.user && isPublic) return location.hash = state.user.role === 'ADMIN' ? '#/admin/reports' : '#/dashboard';
   if (isAdmin && state.user?.role !== 'ADMIN') return location.hash = '#/dashboard';
 
   const view = routes[path];
@@ -237,7 +227,6 @@ async function navigate() {
   try {
     document.getElementById('app').innerHTML = await view(query);
     refreshIcons();
-    // Tutup sidebar saat pindah halaman di mobile
     document.getElementById('sidebar')?.classList.remove('open');
     document.getElementById('overlay')?.classList.remove('show');
   } catch (err) {
@@ -252,20 +241,14 @@ function toggleSidebar() {
   document.getElementById('overlay').classList.toggle('show');
 }
 
-/* =====================================================
-   SHARED LAYOUT (SIDEBAR)
-   ===================================================== */
 function appLayout(activePath, content) {
   const u = state.user;
   if (!u) return content;
-
   const menu = u.role === 'ADMIN' ? [
     ['/admin/reports', 'Laporan Masuk', 'clipboard-list'],
     ['/admin/users', 'Kelola Pengguna', 'users'],
     ['/admin/support', 'Pesan Lupa', 'message-square']
-  ] : [
-    ['/dashboard', 'Laporan Saya', 'clipboard-list']
-  ];
+  ] : [['/dashboard', 'Laporan Saya', 'clipboard-list']];
 
   const navHtml = menu.map(([p, label, icon]) => `
     <a href="#${p}" class="nav-item ${activePath === p ? 'active' : ''}">
@@ -273,7 +256,6 @@ function appLayout(activePath, content) {
     </a>
   `).join('');
 
-  // Timer to attach logout listener
   setTimeout(() => {
     document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
       e.preventDefault();
@@ -287,17 +269,10 @@ function appLayout(activePath, content) {
   return `
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <i data-lucide="monitor-speaker" style="width:24px;height:24px;color:var(--primary)"></i>
-        LaporApp
-      </div>
-      <div class="sidebar-nav">
-        ${navHtml}
-      </div>
+      <div class="sidebar-header"><i data-lucide="monitor-speaker" style="width:24px;height:24px;color:var(--primary)"></i> LaporApp</div>
+      <div class="sidebar-nav">${navHtml}</div>
       <div class="sidebar-footer">
-        <a href="#" id="logoutBtn" class="nav-item" style="color:var(--danger)">
-          <i data-lucide="log-out"></i> Keluar
-        </a>
+        <a href="#" id="logoutBtn" class="nav-item" style="color:var(--danger)"><i data-lucide="log-out"></i> Keluar</a>
       </div>
     </div>
     <div class="main-content">
@@ -305,15 +280,13 @@ function appLayout(activePath, content) {
         <button class="hamburger" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
         <div style="font-weight:600;font-size:16px">Halo, ${u.username}</div>
       </div>
-      <div class="content-area animate-fade">
-        ${content}
-      </div>
+      <div class="content-area animate-fade">${content}</div>
     </div>
   `;
 }
 
 /* =====================================================
-   VIEW: LOGIN
+   VIEWS: AUTH
    ===================================================== */
 routes['/login'] = async () => {
   setTimeout(() => {
@@ -335,7 +308,6 @@ routes['/login'] = async () => {
       }
     };
     
-    // Fitur Lupa Password dengan Email
     document.getElementById('forgotBtn').onclick = () => {
       openModal(`
         <div class="modal__head"><h2>Lupa Akun</h2><button class="modal__close"><i data-lucide="x"></i></button></div>
@@ -352,8 +324,7 @@ routes['/login'] = async () => {
         if (!u || !em || !m) return toast('Lengkapi semua data', 'error');
         try {
           await api('/messages', { body: { guestUsername: u, guestEmail: em, content: m, type: 'forgot' } });
-          closeModal();
-          toast('Pesan terkirim ke Admin.');
+          closeModal(); toast('Pesan terkirim ke Admin.');
         } catch (err) { toast(err.message, 'error'); }
       };
     };
@@ -365,7 +336,13 @@ routes['/login'] = async () => {
       <p class="sub">Sistem pelaporan gangguan alat terpusat.</p>
       <form id="loginForm">
         <div class="field"><label>Username</label><input id="luser" required autofocus placeholder="Masukkan username"></div>
-        <div class="field"><label>Password</label><input id="lpass" type="password" required placeholder="Masukkan password"></div>
+        <div class="field">
+          <label>Password</label>
+          <div class="password-wrap">
+            <input id="lpass" type="password" required placeholder="Masukkan password">
+            <button type="button" class="toggle-pass" onclick="togglePassword('lpass', this)"><i data-lucide="eye" style="width:18px"></i></button>
+          </div>
+        </div>
         <button class="btn btn--block" type="submit">Masuk</button>
       </form>
       <div style="display:flex;justify-content:space-between;margin-top:20px;font-size:13px">
@@ -375,9 +352,6 @@ routes['/login'] = async () => {
     </div></div>`;
 };
 
-/* =====================================================
-   VIEW: REGISTER
-   ===================================================== */
 routes['/register'] = async () => {
   setTimeout(() => {
     document.getElementById('regForm').onsubmit = async (e) => {
@@ -406,7 +380,13 @@ routes['/register'] = async () => {
       <form id="regForm">
         <div class="field"><label>Email (Gmail)</label><input id="remail" type="email" required placeholder="email@gmail.com"></div>
         <div class="field"><label>Username</label><input id="ruser" required minlength="3" placeholder="minimal 3 karakter"></div>
-        <div class="field"><label>Password</label><input id="rpass" type="password" required minlength="6" placeholder="minimal 6 karakter"></div>
+        <div class="field">
+          <label>Password</label>
+          <div class="password-wrap">
+            <input id="rpass" type="password" required minlength="6" placeholder="minimal 6 karakter">
+            <button type="button" class="toggle-pass" onclick="togglePassword('rpass', this)"><i data-lucide="eye" style="width:18px"></i></button>
+          </div>
+        </div>
         <button class="btn btn--block" type="submit">Daftar Sekarang</button>
       </form>
       <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted)">
@@ -416,45 +396,68 @@ routes['/register'] = async () => {
 };
 
 /* =====================================================
-   VIEW: DASHBOARD (USER)
+   VIEWS: USER DASHBOARD & CREATE
    ===================================================== */
 routes['/dashboard'] = async () => {
   const reports = await api('/reports');
-  const cards = reports.length ? reports.map(r => `
-    <div class="card animate-slide">
-      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;gap:12px">
-        <h3 style="font-size:16px;font-weight:600">${escapeHtml(r.location)}</h3>
-        <span class="badge badge--${r.status}">${r.status}</span>
-      </div>
-      <div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:6px">
-        <i data-lucide="calendar" style="width:14px;height:14px"></i> ${new Date(r.created_at).toLocaleDateString('id-ID')}
-      </div>
-      <p style="font-size:14px;line-height:1.6;color:var(--text-main);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">
-        ${escapeHtml(r.description)}
-      </p>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-        <a href="#/report?id=${r.id}" class="btn btn--ghost btn--block" style="padding:8px">Lihat Detail</a>
-      </div>
-    </div>
-  `).join('') : `<div style="text-align:center;padding:60px 20px;color:var(--text-muted);grid-column:1/-1">
-    <i data-lucide="inbox" style="width:48px;height:48px;margin-bottom:16px;opacity:0.5"></i>
-    <h3 style="font-size:16px;color:var(--text-main);margin-bottom:8px">Belum ada laporan</h3>
-    <p style="font-size:14px">Klik tombol di atas untuk membuat laporan baru.</p>
-  </div>`;
+  
+  setTimeout(() => {
+    const renderList = (filterStatus, container) => {
+      const filtered = filterStatus === 'SEMUA' ? reports : reports.filter(r => r.status === filterStatus);
+      container.innerHTML = filtered.length ? filtered.map(r => `
+        <div class="card animate-slide">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;gap:12px">
+            <h3 style="font-size:16px;font-weight:600">${escapeHtml(r.location)}</h3>
+            <span class="badge badge--${r.status}">${r.status}</span>
+          </div>
+          <div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+            <i data-lucide="calendar" style="width:14px;height:14px"></i> ${new Date(r.created_at).toLocaleDateString('id-ID')}
+          </div>
+          <p style="font-size:14px;line-height:1.6;color:var(--text-main);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">
+            ${escapeHtml(r.description)}
+          </p>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <a href="#/report?id=${r.id}" class="btn btn--ghost btn--block" style="padding:8px">Lihat Detail</a>
+          </div>
+        </div>
+      `).join('') : `<div style="text-align:center;padding:60px 20px;color:var(--text-muted);grid-column:1/-1">
+        <i data-lucide="inbox" style="width:48px;height:48px;margin-bottom:16px;opacity:0.5"></i>
+        <h3 style="font-size:16px;color:var(--text-main);margin-bottom:8px">Tidak ada laporan</h3>
+        <p style="font-size:14px">Belum ada laporan dengan status ini.</p>
+      </div>`;
+      refreshIcons();
+    };
+
+    const grid = document.getElementById('userReportGrid');
+    document.querySelectorAll('.tab[data-filter]').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.tab[data-filter]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderList(btn.dataset.filter, grid);
+      };
+    });
+    renderList('SEMUA', grid);
+  });
 
   const content = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
       <h2 style="font-size:20px;font-weight:700">Laporan Saya</h2>
       <a href="#/create" class="btn"><i data-lucide="plus"></i> Buat Laporan</a>
     </div>
-    <div class="grid grid-cards">${cards}</div>
+    
+    <!-- Filter Kategori User -->
+    <div class="filter-tabs">
+      <button class="tab active" data-filter="SEMUA">Semua</button>
+      <button class="tab" data-filter="MENUNGGU">Menunggu</button>
+      <button class="tab" data-filter="DIPROSES">Diproses</button>
+      <button class="tab" data-filter="SELESAI">Selesai</button>
+    </div>
+
+    <div class="grid grid-cards" id="userReportGrid"></div>
   `;
   return appLayout('/dashboard', content);
 };
 
-/* =====================================================
-   VIEW: CREATE REPORT
-   ===================================================== */
 routes['/create'] = async () => {
   setTimeout(() => {
     document.getElementById('createForm').onsubmit = async (e) => {
@@ -486,7 +489,7 @@ routes['/create'] = async () => {
           <div class="field"><label>Detail Gangguan</label><textarea id="cdesc" placeholder="Jelaskan secara detail apa yang rusak atau bermasalah..." required></textarea></div>
           <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:32px">
             <a href="#/dashboard" class="btn btn--ghost">Batal</a>
-            <button type="submit" class="btn">Kirim Laporan</a>
+            <button type="submit" class="btn">Kirim Laporan</button>
           </div>
         </form>
       </div>
@@ -495,15 +498,10 @@ routes['/create'] = async () => {
   return appLayout('/dashboard', content);
 };
 
-/* =====================================================
-   VIEW: REPORT DETAIL (USER)
-   ===================================================== */
 routes['/report'] = async (q) => {
   const report = await api('/reports?id=' + q.id);
-  
   setTimeout(() => {
     mountChat(q.id);
-    // Fitur Hapus Laporan
     document.getElementById('deleteReportBtn').onclick = () => {
       confirmDelete('Yakin ingin menghapus laporan ini secara permanen?', async () => {
         try {
@@ -531,7 +529,6 @@ routes['/report'] = async (q) => {
           <div style="background:var(--bg-body);padding:16px;border-radius:8px;font-size:14px;line-height:1.6">
             ${escapeHtml(report.description)}
           </div>
-          
           <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
             <button id="deleteReportBtn" class="btn btn--danger"><i data-lucide="trash-2"></i> Hapus Laporan</button>
           </div>
@@ -553,29 +550,16 @@ routes['/report'] = async (q) => {
 };
 
 /* =====================================================
-   VIEW: ADMIN — REPORTS (Dengan Grafik Analisis)
+   VIEWS: ADMIN REPORTS (Line Chart + Filter)
    ===================================================== */
 routes['/admin/reports'] = async () => {
   const all = await api('/reports?all=1');
   
-  const countWait = all.filter(r => r.status === 'MENUNGGU').length;
-  const countProcess = all.filter(r => r.status === 'DIPROSES').length;
-  const countDone = all.filter(r => r.status === 'SELESAI').length;
-  const total = all.length || 1; // hindari divide by zero
-
-  const pctWait = (countWait / total) * 100;
-  const pctProcess = (countProcess / total) * 100;
-  const pctDone = (countDone / total) * 100;
-
   setTimeout(() => {
-    const drawList = (filter = '') => {
-      const f = filter.toLowerCase();
-      const list = all.filter(r =>
-        !f || r.reporter_name.toLowerCase().includes(f) ||
-        r.location.toLowerCase().includes(f) ||
-        r.description.toLowerCase().includes(f)
-      );
-      document.getElementById('reportList').innerHTML = list.length ? list.map(r => `
+    // 1. Render Filter Tabs
+    const renderList = (filterStatus, container) => {
+      const filtered = filterStatus === 'SEMUA' ? all : all.filter(r => r.status === filterStatus);
+      container.innerHTML = filtered.length ? filtered.map(r => `
         <div class="card animate-slide">
           <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;gap:12px">
             <h3 style="font-size:16px;font-weight:600">${escapeHtml(r.location)}</h3>
@@ -595,46 +579,116 @@ routes['/admin/reports'] = async () => {
       </div>`;
       refreshIcons();
     };
-    document.getElementById('searchInput').oninput = (e) => drawList(e.target.value);
-    drawList();
+
+    const grid = document.getElementById('adminReportGrid');
+    const searchInput = document.getElementById('searchInput');
+    
+    // Fitur Search + Filter Kategori digabung
+    let currentFilter = 'SEMUA';
+    const applyFilter = () => {
+      const f = searchInput.value.toLowerCase();
+      const searched = all.filter(r => !f || r.reporter_name.toLowerCase().includes(f) || r.location.toLowerCase().includes(f) || r.description.toLowerCase().includes(f));
+      const final = currentFilter === 'SEMUA' ? searched : searched.filter(r => r.status === currentFilter);
+      
+      grid.innerHTML = final.length ? final.map(r => `
+        <div class="card animate-slide">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;gap:12px">
+            <h3 style="font-size:16px;font-weight:600">${escapeHtml(r.location)}</h3>
+            <span class="badge badge--${r.status}">${r.status}</span>
+          </div>
+          <div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+            <i data-lucide="user" style="width:14px;height:14px"></i> ${escapeHtml(r.reporter_name)}
+          </div>
+          <p style="font-size:14px;color:var(--text-main);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${escapeHtml(r.description)}</p>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <a href="#/admin/report?id=${r.id}" class="btn btn--ghost btn--block" style="padding:8px">Kelola Laporan</a>
+          </div>
+        </div>
+      `).join('') : `<div style="text-align:center;padding:60px 20px;color:var(--text-muted);grid-column:1/-1">
+        <i data-lucide="search-x" style="width:48px;height:48px;margin-bottom:16px;opacity:0.5"></i>
+        <h3 style="font-size:16px;color:var(--text-main)">Tidak ada hasil</h3>
+      </div>`;
+      refreshIcons();
+    };
+
+    document.querySelectorAll('.tab[data-filter]').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.tab[data-filter]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        applyFilter();
+      };
+    });
+    searchInput.oninput = applyFilter;
+    applyFilter();
+
+    // 2. Render Line Chart (Chart.js)
+    // Ambil data 7 hari terakhir untuk sumbu X
+    const dates = [...Array(7)].map((_, i) => {
+      const d = new Date(); d.setDate(d.getDate() - i); return d.toISOString().split('T')[0];
+    }).reverse();
+
+    const dataMenunggu = dates.map(date => all.filter(r => r.created_at.startsWith(date) && r.status === 'MENUNGGU').length);
+    const dataDiproses = dates.map(date => all.filter(r => r.created_at.startsWith(date) && r.status === 'DIPROSES').length);
+    const dataSelesai = dates.map(date => all.filter(r => r.created_at.startsWith(date) && r.status === 'SELESAI').length);
+
+    const ctx = document.getElementById('analyticsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dates.map(d => {
+          const parts = d.split('-');
+          return `${parts[2]}/${parts[1]}`; // Format DD/MM
+        }),
+        datasets: [
+          { label: 'Menunggu', data: dataMenunggu, borderColor: '#EAB308', backgroundColor: 'rgba(234,179,8,0.1)', tension: 0.3, fill: true },
+          { label: 'Diproses', data: dataDiproses, borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.1)', tension: 0.3, fill: true },
+          { label: 'Selesai', data: dataSelesai, borderColor: '#10B981', backgroundColor: 'rgba(16,185,129,0.1)', tension: 0.3, fill: true }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { font: { family: 'Plus Jakarta Sans' } } } },
+        scales: { 
+          y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Plus Jakarta Sans' } } },
+          x: { ticks: { font: { family: 'Plus Jakarta Sans' } } }
+        }
+      }
+    });
   });
 
   const content = `
     <h2 style="font-size:20px;font-weight:700;margin-bottom:24px">Ringkasan Laporan</h2>
     
-    <div class="card analytics-card">
-      <div class="analytics-header">
-        <span>Total: ${all.length} Laporan</span>
-        <span>${Math.round(pctDone)}% Selesai</span>
-      </div>
-      <div class="analytics-bar">
-        <div class="bar-segment bar-waiting" style="width: ${pctWait}%" title="Menunggu: ${countWait}"></div>
-        <div class="bar-segment bar-process" style="width: ${pctProcess}%" title="Diproses: ${countProcess}"></div>
-        <div class="bar-segment bar-done" style="width: ${pctDone}%" title="Selesai: ${countDone}"></div>
-      </div>
-      <div class="analytics-legend">
-        <div class="legend-item"><div class="dot" style="background:var(--waiting)"></div> Menunggu (${countWait})</div>
-        <div class="legend-item"><div class="dot" style="background:var(--process)"></div> Diproses (${countProcess})</div>
-        <div class="legend-item"><div class="dot" style="background:var(--done)"></div> Selesai (${countDone})</div>
+    <!-- Line Chart Container -->
+    <div class="chart-container">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:16px">Tren Laporan 7 Hari Terakhir</h3>
+      <div style="height: 250px; width: 100%;">
+        <canvas id="analyticsChart"></canvas>
       </div>
     </div>
 
-    <div class="field" style="margin-bottom:24px; position:relative">
+    <!-- Search & Filter -->
+    <div class="field" style="margin-bottom:16px; position:relative">
       <i data-lucide="search" style="position:absolute;left:16px;top:14px;color:var(--text-muted);width:18px"></i>
       <input id="searchInput" placeholder="Cari nama, tempat, atau deskripsi..." style="padding-left:48px;border-radius:24px">
     </div>
+
+    <div class="filter-tabs">
+      <button class="tab active" data-filter="SEMUA">Semua</button>
+      <button class="tab" data-filter="MENUNGGU">Menunggu</button>
+      <button class="tab" data-filter="DIPROSES">Diproses</button>
+      <button class="tab" data-filter="SELESAI">Selesai</button>
+    </div>
     
-    <div class="grid grid-cards" id="reportList"></div>
+    <div class="grid grid-cards" id="adminReportGrid"></div>
   `;
   return appLayout('/admin/reports', content);
 };
 
-/* =====================================================
-   VIEW: ADMIN — REPORT DETAIL
-   ===================================================== */
 routes['/admin/report'] = async (q) => {
   const report = await api('/reports?id=' + q.id);
-  
   setTimeout(() => {
     mountChat(q.id);
     document.getElementById('updateBtn').onclick = async () => {
@@ -653,7 +707,6 @@ routes['/admin/report'] = async (q) => {
   });
   
   const statuses = ['MENUNGGU', 'DIPROSES', 'SELESAI'];
-
   const content = `
     <div style="margin-bottom:20px"><a href="#/admin/reports" style="display:inline-flex;align-items:center;gap:6px;color:var(--text-muted);font-size:14px"><i data-lucide="arrow-left" style="width:16px"></i> Kembali</a></div>
     <div class="two-col">
@@ -670,7 +723,6 @@ routes['/admin/report'] = async (q) => {
           <div style="background:var(--bg-body);padding:16px;border-radius:8px;font-size:14px;line-height:1.6">
             ${escapeHtml(report.description)}
           </div>
-          
           <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border)">
             <label style="font-size:13px;font-weight:600;display:block;margin-bottom:12px">Ubah Status Laporan</label>
             <div style="display:flex;gap:12px">
@@ -698,12 +750,13 @@ routes['/admin/report'] = async (q) => {
 };
 
 /* =====================================================
-   VIEW: ADMIN — USERS (Kelola Pengguna & Admin)
+   VIEWS: ADMIN USERS (Kelola & Edit User/Admin)
    ===================================================== */
 routes['/admin/users'] = async () => {
-  const users = await api('/users');
+  const allUsers = await api('/users');
   
   setTimeout(() => {
+    // Form Tambah Admin
     document.getElementById('addAdminForm').onsubmit = async (e) => {
       e.preventDefault();
       try {
@@ -713,10 +766,11 @@ routes['/admin/users'] = async () => {
           password: document.getElementById('apass').value,
         }});
         toast('Admin baru dibuat');
-        e.target.reset();
+        navigate(); // reload halaman
       } catch (err) { toast(err.message, 'error'); }
     };
 
+    // Fitur Hapus
     document.querySelectorAll('.deleteUserBtn').forEach(btn => {
       btn.onclick = () => {
         const id = btn.dataset.id;
@@ -725,53 +779,109 @@ routes['/admin/users'] = async () => {
           try {
             await api('/users?id=' + id, { method: 'DELETE' });
             toast('User berhasil dihapus');
-            navigate(); // reload halaman
+            navigate();
           } catch (err) { toast(err.message, 'error'); }
         });
       };
     });
+
+    // Fitur Edit
+    document.querySelectorAll('.editUserBtn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.dataset.id;
+        const em = btn.dataset.email;
+        const un = btn.dataset.name;
+        const role = btn.dataset.role;
+
+        openModal(`
+          <div class="modal__head"><h2>Edit ${role === 'ADMIN' ? 'Admin' : 'User'}</h2><button class="modal__close"><i data-lucide="x"></i></button></div>
+          <div class="field"><label>Email</label><input id="eemail" value="${escapeHtml(em)}" required></div>
+          <div class="field"><label>Username</label><input id="euser" value="${escapeHtml(un)}" required></div>
+          <div class="field">
+            <label>Password Baru <span style="font-weight:400;color:var(--text-muted);font-size:11px">(Opsional)</span></label>
+            <div class="password-wrap">
+              <input id="epass" type="password" placeholder="Kosongkan jika tidak diubah">
+              <button type="button" class="toggle-pass" onclick="togglePassword('epass', this)"><i data-lucide="eye" style="width:18px"></i></button>
+            </div>
+          </div>
+          <button class="btn btn--block" id="eSave" style="margin-top:12px">Simpan Perubahan</button>
+        `);
+        
+        document.getElementById('eSave').onclick = async () => {
+          const newEm = document.getElementById('eemail').value.trim();
+          const newUn = document.getElementById('euser').value.trim();
+          const newPw = document.getElementById('epass').value;
+          try {
+            await api('/users', { method: 'PATCH', body: { id, email: newEm, username: newUn, password: newPw } });
+            toast('Berhasil diperbarui');
+            closeModal();
+            navigate();
+          } catch (err) { toast(err.message, 'error'); }
+        };
+      };
+    });
   });
 
-  const userRows = users.map(u => `
-    <tr>
-      <td>
-        <div style="font-weight:600">${escapeHtml(u.username)}</div>
-        <div style="font-size:12px;color:var(--text-muted)">${escapeHtml(u.email)}</div>
-      </td>
-      <td>${new Date(u.created_at).toLocaleDateString('id-ID')}</td>
-      <td style="text-align:right">
-        <button class="btn-icon btn-icon--danger deleteUserBtn" data-id="${u.id}" data-name="${escapeHtml(u.username)}"><i data-lucide="trash-2" style="width:16px"></i></button>
-      </td>
-    </tr>
-  `).join('');
+  // Pisahkan data User dan Admin
+  const users = allUsers.filter(u => u.role === 'USER');
+  const admins = allUsers.filter(u => u.role === 'ADMIN');
+
+  const buildTable = (data, isAdmin) => {
+    if(!data.length) return `<tr><td colspan="3" style="text-align:center;color:var(--text-muted)">Belum ada data</td></tr>`;
+    return data.map(u => `
+      <tr>
+        <td>
+          <div style="font-weight:600">${escapeHtml(u.username)}</div>
+          <div style="font-size:12px;color:var(--text-muted)">${escapeHtml(u.email)}</div>
+        </td>
+        <td style="display:none">${new Date(u.created_at).toLocaleDateString('id-ID')}</td>
+        <td style="text-align:right;white-space:nowrap">
+          <button class="btn-icon btn-icon--primary editUserBtn" data-id="${u.id}" data-email="${escapeHtml(u.email)}" data-name="${escapeHtml(u.username)}" data-role="${u.role}"><i data-lucide="pencil" style="width:16px"></i></button>
+          ${!isAdmin ? `<button class="btn-icon btn-icon--danger deleteUserBtn" data-id="${u.id}" data-name="${escapeHtml(u.username)}" style="margin-left:8px"><i data-lucide="trash-2" style="width:16px"></i></button>` : ''}
+        </td>
+      </tr>
+    `).join('');
+  };
 
   const content = `
     <h2 style="font-size:20px;font-weight:700;margin-bottom:24px">Kelola Pengguna</h2>
     
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" class="two-col">
-      <!-- Kolom Kiri: List User -->
+    <div class="two-col">
+      <!-- Kolom Kiri: Daftar User Biasa -->
       <div>
-        <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Daftar User Terdaftar</h3>
+        <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Daftar User Terdaftar (Pelapor)</h3>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>User</th><th>Terdaftar</th><th></th></tr></thead>
-            <tbody>
-              ${userRows || `<tr><td colspan="3" style="text-align:center;color:var(--text-muted)">Belum ada user</td></tr>`}
-            </tbody>
+            <thead><tr><th>User</th><th></th></tr></thead>
+            <tbody>${buildTable(users, false)}</tbody>
           </table>
         </div>
       </div>
       
-      <!-- Kolom Kanan: Tambah Admin -->
+      <!-- Kolom Kanan: Tambah Admin & List Admin -->
       <div>
-        <div class="card">
+        <div class="card" style="margin-bottom:24px">
           <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Buat Admin Baru</h3>
           <form id="addAdminForm">
             <div class="field"><label>Email</label><input id="aemail" type="email" required></div>
             <div class="field"><label>Username</label><input id="auser" required></div>
-            <div class="field"><label>Password</label><input id="apass" type="password" required minlength="6"></div>
+            <div class="field">
+               <label>Password</label>
+               <div class="password-wrap">
+                 <input id="apass" type="password" required minlength="6">
+                 <button type="button" class="toggle-pass" onclick="togglePassword('apass', this)"><i data-lucide="eye" style="width:18px"></i></button>
+               </div>
+            </div>
             <button class="btn btn--block" type="submit">Buat Admin</button>
           </form>
+        </div>
+        
+        <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Daftar Admin Aktif</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Admin</th><th></th></tr></thead>
+            <tbody>${buildTable(admins, true)}</tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -780,11 +890,10 @@ routes['/admin/users'] = async () => {
 };
 
 /* =====================================================
-   VIEW: ADMIN — SUPPORT INBOX
+   VIEWS: ADMIN SUPPORT
    ===================================================== */
 routes['/admin/support'] = async () => {
   const msgs = await api('/messages?inbox=forgot');
-  
   const list = msgs.length ? msgs.map(m => `
     <div class="card animate-slide" style="margin-bottom:16px">
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px">
@@ -805,7 +914,7 @@ routes['/admin/support'] = async () => {
 };
 
 /* =====================================================
-   CHAT COMPONENT (polling 3s)
+   CHAT COMPONENT & UTILS
    ===================================================== */
 function mountChat(reportId) {
   const body = document.getElementById('chatBody');
@@ -837,27 +946,19 @@ function mountChat(reportId) {
     input.value = '';
     try {
       await api('/messages', { body: { reportId, content } });
-      lastLen = -1;
-      load();
+      lastLen = -1; load();
     } catch (err) { toast(err.message, 'error'); }
   };
 
-  load();
-  setInterval(load, 3000);
+  load(); setInterval(load, 3000);
 }
 
-/* =====================================================
-   UTIL
-   ===================================================== */
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
 
-/* =====================================================
-   INIT
-   ===================================================== */
 (async function init() {
   try {
     const data = await api('/auth?action=me');
@@ -865,9 +966,7 @@ function escapeHtml(s) {
   } catch { state.user = null; }
 
   if (!location.hash) {
-    location.hash = state.user
-      ? (state.user.role === 'ADMIN' ? '#/admin/reports' : '#/dashboard')
-      : '#/login';
+    location.hash = state.user ? (state.user.role === 'ADMIN' ? '#/admin/reports' : '#/dashboard') : '#/login';
   }
   navigate();
 })();
